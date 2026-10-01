@@ -12,16 +12,16 @@ import {
     cargarSerieTemporal as cargarSerieTemporalJSON,
     contarVolcanesInSAR,
     contarVolcanesSismica
-} from "./data.js";
+} from "./data.js?v=20261001-sama";
 
 import {
     crearMapaGeneral,
     crearMapaBoletin
-} from "./map.js";
+} from "./map.js?v=20261001-sama";
 
 import {
     crearGraficaEvolucion
-} from "./charts.js";
+} from "./charts.js?v=20261001-sama";
 
 
 const EDIFICIOS_VOLCANICOS_REGISTRADOS = 26;
