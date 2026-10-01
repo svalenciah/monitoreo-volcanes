@@ -567,4 +567,12 @@ function formatearFecha(fecha) {
 }
 
 
+const menuToggle = document.querySelector(".menu-toggle");
+const siteNav = document.querySelector(".site-nav");
+menuToggle.addEventListener("click", () => {
+    const abierto = menuToggle.getAttribute("aria-expanded") !== "true";
+    menuToggle.setAttribute("aria-expanded", String(abierto));
+    siteNav.classList.toggle("is-open", abierto);
+});
+
 iniciar();

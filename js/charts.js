@@ -59,6 +59,9 @@ export function crearGraficaEvolucion(
         item => item.promedio_cm
     );
 
+    Chart.defaults.font.family = getComputedStyle(canvas).fontFamily;
+    Chart.defaults.color = "#002040";
+
     graficaEvolucion = new Chart(
         canvas,
         {
@@ -70,6 +73,9 @@ export function crearGraficaEvolucion(
                     {
                         label: "Deformación promedio acumulada (cm)",
                         data: valores,
+                        borderColor: "#1f7a8c",
+                        backgroundColor: "#A8D4EA",
+                        pointBackgroundColor: "#002040",
                         borderWidth: 2,
                         pointRadius: 3,
                         pointHoverRadius: 5,

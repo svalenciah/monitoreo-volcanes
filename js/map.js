@@ -1,18 +1,99 @@
 let mapaGeneral = null;
 let mapaBoletin = null;
 
-function agregarMapaBase(mapa) {
-    const capaBase = L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
-            maxZoom: 19,
-            attribution: "&copy; OpenStreetMap contributors"
-        }
-    );
+function crearCapasBase() {
+    return {
+        "Claro": L.tileLayer(
+            "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+            {
+                maxNativeZoom: 16,
+                maxZoom: 20,
+                attribution: "Tiles &copy; Esri, HERE, Garmin, OpenStreetMap contributors"
+            }
+        ),
+        "OpenStreetMap": L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                maxZoom: 19,
+                attribution: "&copy; OpenStreetMap contributors"
+            }
+        ),
+        "Satélite": L.tileLayer(
+            "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            {
+                maxZoom: 19,
+                attribution: "Tiles &copy; Esri"
+            }
+        ),
+        "Relieve suave": L.layerGroup([
+            L.tileLayer(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+                {
+                    maxNativeZoom: 16,
+                    maxZoom: 20,
+                    attribution: "Tiles &copy; Esri, HERE, Garmin, OpenStreetMap contributors"
+                }
+            ),
+            L.tileLayer(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}",
+                {
+                    maxNativeZoom: 13,
+                    maxZoom: 20,
+                    opacity: 0.42,
+                    attribution: "Hillshade &copy; Esri"
+                }
+            ),
+            L.tileLayer(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}",
+                {
+                    maxNativeZoom: 16,
+                    maxZoom: 20,
+                    attribution: "Labels &copy; Esri, HERE, Garmin"
+                }
+            )
+        ])
+    };
+}
 
-    capaBase.addTo(mapa);
+function agregarControlesMapa(mapa, capasBase) {
+    capasBase.Claro.addTo(mapa);
 
-    return capaBase;
+    const control = L.control({ position: "bottomright" });
+    control.onAdd = function () {
+        const barra = L.DomUtil.create("div", "map-toolbar");
+        const acercar = L.DomUtil.create("button", "", barra);
+        const alejar = L.DomUtil.create("button", "", barra);
+        const selector = L.DomUtil.create("select", "", barra);
+        selector.setAttribute("aria-label", "Mapa base");
+
+        acercar.type = "button";
+        acercar.textContent = "+";
+        acercar.title = "Acercar";
+        acercar.setAttribute("aria-label", "Acercar");
+        alejar.type = "button";
+        alejar.textContent = "−";
+        alejar.title = "Alejar";
+        alejar.setAttribute("aria-label", "Alejar");
+
+        Object.keys(capasBase).forEach(nombre => {
+            const opcion = document.createElement("option");
+            opcion.value = nombre;
+            opcion.textContent = nombre;
+            selector.appendChild(opcion);
+        });
+
+        acercar.addEventListener("click", () => mapa.zoomIn());
+        alejar.addEventListener("click", () => mapa.zoomOut());
+        selector.addEventListener("change", () => {
+            Object.values(capasBase).forEach(capa => mapa.removeLayer(capa));
+            capasBase[selector.value].addTo(mapa);
+        });
+
+        L.DomEvent.disableClickPropagation(barra);
+        L.DomEvent.disableScrollPropagation(barra);
+        return barra;
+    };
+    control.addTo(mapa);
 }
 
 // ============================================================
@@ -38,11 +119,12 @@ export function crearMapaGeneral(
     mapaGeneral = L.map(
         "general-map",
         {
-            zoomControl: true
+            zoomControl: false
         }
     );
 
-    const capaBase = agregarMapaBase(mapaGeneral);
+    const capasBase = crearCapasBase();
+    agregarControlesMapa(mapaGeneral, capasBase);
 
     const iconoVolcan = L.divIcon({
         className: "volcano-marker-container",
@@ -144,12 +226,11 @@ export function crearMapaGeneral(
     }
 
     L.control.layers(
-        {
-            "OpenStreetMap": capaBase
-        },
+        {},
         capasSuperpuestas,
         {
-            collapsed: true
+            collapsed: true,
+            position: "topleft"
         }
     ).addTo(mapaGeneral);
 
@@ -239,11 +320,12 @@ export async function crearMapaBoletin(
     mapaBoletin = L.map(
         "bulletin-map",
         {
-            zoomControl: true
+            zoomControl: false
         }
     );
 
-    const capaBase = agregarMapaBase(mapaBoletin);
+    const capasBase = crearCapasBase();
+    agregarControlesMapa(mapaBoletin, capasBase);
 
     mapaBoletin.createPane("rasterPane");
     mapaBoletin.getPane("rasterPane").style.zIndex = 250;
@@ -356,12 +438,11 @@ export async function crearMapaBoletin(
     }
 
     L.control.layers(
-        {
-            "OpenStreetMap": capaBase
-        },
+        {},
         capasSuperpuestas,
         {
-            collapsed: true
+            collapsed: true,
+            position: "topleft"
         }
     ).addTo(mapaBoletin);
 

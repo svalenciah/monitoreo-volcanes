@@ -12,28 +12,13 @@
     >
 
     <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
-
-    <link
         rel="stylesheet"
         href="./css/styles.css"
     >
 </head>
 
 <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
     <!-- =====================================================
          CABECERA INSTITUCIONAL
@@ -54,9 +39,17 @@
             >
 
         </div>
+        <nav class="site-nav" aria-label="Navegación del geoportal">
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-links">☰ Menú</button>
+            <div class="nav-links" id="site-links">
+                <a href="./#resumen">Resumen</a>
+                <a href="./#mapa">Mapa</a>
+                <a href="?volcan=el_aburrido">El Aburrido</a>
+                <a href="?volcan=las_changas">Las Changas</a>
+            </div>
+        </nav>
     </header>
-
-    <div class="institutional-blue-line"></div>
+    <div id="contenido" tabindex="-1"></div>
 
 
     <!-- =====================================================
@@ -65,37 +58,16 @@
     <section id="home-view">
         <main>
 
-            <section class="hero-section">
-
-                <p class="eyebrow">
-                    BOLETÍN DE MONITOREO
-                </p>
-
-                <h1>
-                    Boletín de Volcanes de Lodo
-                </h1>
-
+            <section id="resumen" class="hero-section">
+                <div>
+                    <p class="eyebrow">Boletín de monitoreo · InSAR</p>
+                    <h1>Boletín de Volcanes de Lodo</h1>
+                </div>
                 <p class="hero-subtitle">
-                    Monitoreo satelital de cambios en la superficie
-                    mediante interferometría radar
+                    Monitoreo satelital de cambios en la superficie mediante
+                    interferometría radar en Antioquia.
                 </p>
-
             </section>
-
-
-            <section class="intro-section">
-
-                <h2>
-                    Volcanes de lodo monitoreados
-                </h2>
-
-                <p>
-                    Seleccione un volcán de lodo en el mapa para consultar
-                    la información disponible de monitoreo.
-                </p>
-
-            </section>
-
 
             <section class="general-summary">
 
@@ -133,8 +105,23 @@
             </section>
 
 
-            <section class="map-section">
+            <section id="mapa" class="map-section" aria-label="Mapa de volcanes de lodo y estaciones sísmicas">
                 <div id="general-map"></div>
+
+                <aside class="map-panel" aria-label="Leyenda del mapa">
+                    <p class="eyebrow">Antioquia</p>
+                    <h2>Capas del mapa</h2>
+
+                    <div class="map-legend-list">
+                        <span><i class="map-symbol volcano-symbol"></i>Volcán de lodo</span>
+                        <span><i class="map-symbol seismic-symbol"></i>Estación sísmica</span>
+                    </div>
+
+                    <p class="map-note">
+                        Seleccione un volcán para consultar sus observaciones InSAR,
+                        series temporales y datos técnicos.
+                    </p>
+                </aside>
             </section>
 
         </main>
@@ -414,6 +401,11 @@
         </main>
     </section>
 
+
+    <footer>
+        <span>SAMA · Sistema de Alerta y Monitoreo de Antioquia</span>
+        <span>Monitoreo satelital de volcanes de lodo · InSAR</span>
+    </footer>
 
     <!-- =====================================================
          LIBRERIAS
