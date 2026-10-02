@@ -102,7 +102,6 @@ function agregarControlesMapa(mapa, capasBase) {
 
 export function crearMapaGeneral(
     volcanesGeoJSON,
-    estacionesGeoJSON,
     onVolcanClick,
     municipiosAntioquiaGeoJSON
 ) {
@@ -199,59 +198,12 @@ export function crearMapaGeneral(
         }
     ).addTo(mapaGeneral);
 
-    let capaEstaciones = null;
-
-    if (
-        estacionesGeoJSON &&
-        Array.isArray(estacionesGeoJSON.features)
-    ) {
-        capaEstaciones = L.geoJSON(
-            estacionesGeoJSON,
-            {
-                pointToLayer: function (feature, latlng) {
-                    return L.circleMarker(
-                        latlng,
-                        {
-                            radius: 6,
-                            weight: 0,
-                            fillColor: "#176b87",
-                            fillOpacity: 1
-                        }
-                    );
-                },
-
-                onEachFeature: function (feature, layer) {
-                    const propiedades = feature.properties || {};
-                    const nombre =
-                        propiedades.nombre ||
-                        propiedades.id ||
-                        "Estación sísmica";
-
-                    layer.bindTooltip(
-                        nombre,
-                        {
-                            direction: "top"
-                        }
-                    );
-
-                    layer.bindPopup(
-                        `<strong>${nombre}</strong>`
-                    );
-                }
-            }
-        ).addTo(mapaGeneral);
-    }
-
     const capasSuperpuestas = {
         "Volcanes de lodo": capaVolcanes
     };
 
     if (capaMunicipios) {
         capasSuperpuestas["Límite municipal"] = capaMunicipios;
-    }
-
-    if (capaEstaciones) {
-        capasSuperpuestas["Estaciones sísmicas"] = capaEstaciones;
     }
 
     L.control.layers(
@@ -267,17 +219,6 @@ export function crearMapaGeneral(
 
     if (capaMunicipios?.getBounds().isValid()) {
         limites.extend(capaMunicipios.getBounds());
-    }
-
-    if (
-        capaEstaciones &&
-        capaEstaciones.getBounds().isValid()
-    ) {
-        if (limites.isValid()) {
-            limites.extend(capaEstaciones.getBounds());
-        } else {
-            limites = capaEstaciones.getBounds();
-        }
     }
 
     if (limites.isValid()) {
@@ -337,7 +278,8 @@ function colorDesplazamiento(valorMetros) {
 export async function crearMapaBoletin(
     observacion,
     areaGeoJSON,
-    flujosGeoJSON
+    flujosGeoJSON,
+    estacionesSismicasGeoJSON
 ) {
     const contenedor = document.getElementById("bulletin-map");
 
@@ -467,6 +409,72 @@ export async function crearMapaBoletin(
 
         if (!limitesFinales && capaFlujos.getBounds().isValid()) {
             limitesFinales = capaFlujos.getBounds();
+        }
+    }
+
+    if (
+        estacionesSismicasGeoJSON &&
+        Array.isArray(estacionesSismicasGeoJSON.features) &&
+        estacionesSismicasGeoJSON.features.length > 0
+    ) {
+        const capaEstaciones = L.geoJSON(
+            estacionesSismicasGeoJSON,
+            {
+                pointToLayer: function (feature, latlng) {
+                    const propiedades = feature.properties || {};
+                    const digitosId = String(propiedades.id || "").match(/\d+$/)?.[0];
+                    const valorNumero = propiedades.numero || digitosId || "";
+                    const numero = /^\d+$/.test(String(valorNumero))
+                        ? String(Number(valorNumero))
+                        : "?";
+                    const icono = L.divIcon({
+                        className: "seismic-station-container",
+                        html: `<span class="seismic-station-marker">${numero}</span>`,
+                        iconSize: [24, 24],
+                        iconAnchor: [12, 12],
+                        popupAnchor: [0, -12]
+                    });
+
+                    return L.marker(latlng, { icon: icono });
+                },
+
+                onEachFeature: function (feature, layer) {
+                    const propiedades = feature.properties || {};
+                    const nombre = propiedades.nombre || propiedades.id || "Estación sísmica";
+                    const coordenadas = feature.geometry?.coordinates || [];
+                    const popup = document.createElement("table");
+                    popup.className = "seismic-popup-table";
+
+                    const filas = [
+                        ["Instrumento", nombre],
+                        ["Tipo", propiedades.tipo || "Sísmica"],
+                        ["Latitud", Number(coordenadas[1]).toFixed(8)],
+                        ["Longitud", Number(coordenadas[0]).toFixed(8)]
+                    ];
+
+                    for (const [etiqueta, valor] of filas) {
+                        const fila = popup.insertRow();
+                        const encabezado = document.createElement("th");
+                        const celda = fila.insertCell();
+                        encabezado.textContent = etiqueta;
+                        celda.textContent = valor;
+                        fila.prepend(encabezado);
+                    }
+
+                    layer.bindPopup(popup);
+                    layer.bindTooltip(nombre, { direction: "top", offset: [0, -10] });
+                }
+            }
+        ).addTo(mapaBoletin);
+
+        capasSuperpuestas["Estaciones sísmicas"] = capaEstaciones;
+
+        if (capaEstaciones.getBounds().isValid()) {
+            if (limitesFinales) {
+                limitesFinales.extend(capaEstaciones.getBounds());
+            } else {
+                limitesFinales = capaEstaciones.getBounds();
+            }
         }
     }
 

@@ -149,7 +149,6 @@ async function mostrarMapaGeneral(catalogo) {
 
     crearMapaGeneral(
         volcanes,
-        estaciones,
         volcanId => {
             if (!buscarVolcan(catalogo, volcanId)) {
                 return;
@@ -260,6 +259,23 @@ async function mostrarBoletin(
         );
     }
 
+    let estacionesVolcan = {
+        type: "FeatureCollection",
+        features: []
+    };
+
+    try {
+        const estaciones = await cargarEstacionesSismicas();
+        estacionesVolcan.features = (estaciones.features || []).filter(
+            feature => feature.properties?.volcan_id === volcan.id
+        );
+    } catch (error) {
+        console.warn(
+            "No fue posible cargar las estaciones sísmicas del volcán:",
+            error
+        );
+    }
+
     // --------------------------------------------------------
     // Fechas disponibles
     // --------------------------------------------------------
@@ -301,7 +317,8 @@ async function mostrarBoletin(
     await cargarObservacion(
         observacionInicial,
         area,
-        flujos
+        flujos,
+        estacionesVolcan
     );
 
     // --------------------------------------------------------
@@ -351,7 +368,8 @@ async function mostrarBoletin(
         await cargarObservacion(
             observacion,
             area,
-            flujos
+            flujos,
+            estacionesVolcan
         );
     };
 
@@ -368,7 +386,8 @@ async function mostrarBoletin(
 async function cargarObservacion(
     observacion,
     area,
-    flujos
+    flujos,
+    estacionesGeoJSON
 ) {
     if (!observacion) {
         return;
@@ -421,7 +440,8 @@ async function cargarObservacion(
     await crearMapaBoletin(
         observacion,
         area,
-        flujos
+        flujos,
+        estacionesGeoJSON
     );
 }
 

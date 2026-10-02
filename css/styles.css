@@ -77,6 +77,12 @@ section[id] { scroll-margin-top: 160px; }
 .volcano-marker { width: 20px; height: 18px; background: var(--marker-color); clip-path: polygon(50% 0, 0 100%, 100% 100%); }
 .volcano-marker-insar { --marker-color: var(--insar); }
 .volcano-marker-no-insar { --marker-color: var(--sin-insar); }
+.seismic-station-container { display: grid; place-items: center; background: transparent; border: 0; }
+.seismic-station-marker { display: grid; place-items: center; width: 24px; height: 24px; border: 2px solid #176b56; border-radius: 50%; background: #39b77a; color: #063a2a; font-size: 12px; font-weight: 850; line-height: 1; box-shadow: 0 1px 4px rgba(0, 32, 64, 0.25); }
+.seismic-popup-table { border-collapse: collapse; color: var(--azul); font: inherit; font-size: 13px; min-width: 220px; }
+.seismic-popup-table th, .seismic-popup-table td { padding: 6px 8px; border-bottom: 1px solid var(--borde); text-align: left; }
+.seismic-popup-table th { font-weight: 800; white-space: nowrap; }
+.seismic-popup-table tr:last-child th, .seismic-popup-table tr:last-child td { border-bottom: 0; }
 
 /* Detalle InSAR, conservando mapas, leyenda científica y series. */
 .back-button { margin: 0 0 12px; padding: 8px 14px; border: 1px solid var(--borde); border-radius: var(--radius); background: white; color: var(--azul); font: inherit; font-weight: 750; min-height: 44px; cursor: pointer; }
