@@ -7,6 +7,8 @@
     --borde: #d8dee8;
     --sismica: #1f7a8c;
     --volcan: #b42318;
+    --insar: #e87524;
+    --sin-insar: #78828d;
     --radius: 20px;
     --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
@@ -16,8 +18,8 @@ html { scroll-behavior: smooth; }
 body {
     margin: 0;
     background: var(--fondo);
-    color: #000;
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--azul);
+    font-family: "Nunito Sans", sans-serif;
     line-height: 1.5;
 }
 [hidden] { display: none !important; }
@@ -32,7 +34,7 @@ section[id] { scroll-margin-top: 160px; }
 .skip-link:focus { top: 12px; }
 
 /* Cabecera y navegación con la paleta del portal SAMA de referencia. */
-.institutional-header { position: sticky; top: 0; z-index: 1100; background: white; box-shadow: var(--shadow); }
+.institutional-header { position: sticky; top: 0; z-index: 1100; background: white; box-shadow: 0 2px 8px rgba(0, 32, 64, 0.12); }
 .institutional-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 12px clamp(16px, 3vw, 42px); border-bottom: 1px solid var(--borde); }
 .logo-sama, .logo-instituciones { display: block; width: auto; height: clamp(38px, 4.6vw, 58px); object-fit: contain; max-width: 48%; }
 .site-nav { background: var(--azul); color: white; padding: 8px clamp(16px, 3vw, 42px); }
@@ -56,19 +58,25 @@ section[id] { scroll-margin-top: 160px; }
 #stat-date { font-size: 22px; line-height: 1.15; }
 
 /* Mapa general y panel lateral. */
-.map-section { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 12px; align-items: start; }
-#general-map, #bulletin-map { width: 100%; height: 620px; background: #dfe5ec; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
-.map-panel, .concepts-panel, .map-legend, .observation-description, .time-series-section, .technical-section { background: white; border-radius: var(--radius); box-shadow: var(--shadow); min-width: 0; }
+.map-section { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 12px; align-items: start; }
+#general-map, #bulletin-map { width: 100%; height: 620px; background: #dfe5ec; border: 1px solid var(--borde); border-radius: 6px; overflow: hidden; }
+.map-panel, .concepts-panel, .map-legend, .observation-description, .time-series-section, .technical-section { background: white; border: 1px solid var(--borde); border-radius: 6px; min-width: 0; }
 .map-panel { padding: 16px; }
 .map-panel h2 { font-size: 24px; }
-.map-legend-list { display: grid; gap: 12px; margin-top: 16px; }
+.map-legend-list { display: grid; gap: 12px; margin: 16px 0; }
 .map-legend-list span { display: flex; align-items: center; gap: 10px; font-size: 14px; }
 .map-symbol { flex: 0 0 auto; display: inline-block; width: 14px; height: 14px; border-radius: 50%; }
-.volcano-symbol { background: var(--volcan); }
+.volcano-symbol-insar, .volcano-symbol-no-insar { clip-path: polygon(50% 0, 0 100%, 100% 100%); border-radius: 0; }
+.volcano-symbol-insar { background: var(--insar); }
+.volcano-symbol-no-insar { background: var(--sin-insar); }
 .seismic-symbol { background: var(--sismica); }
-.map-note { margin: 16px 0 0; padding: 12px 14px; border: 1px solid var(--borde); border-radius: var(--radius); font-size: 12px; line-height: 1.38; }
+.municipality-symbol { flex: 0 0 auto; width: 20px; height: 0; border-top: 2px solid #172033; opacity: 0.7; }
+.map-note { margin: 16px 0 0; padding: 12px 0 0; border-top: 1px solid var(--borde); font-size: 13px; line-height: 1.5; }
+.map-attribution { font-size: 11px; }
 .volcano-marker-container { background: transparent; border: 0; }
-.volcano-marker { width: 20px; height: 20px; border: 2px solid white; border-radius: 50%; background: var(--volcan); }
+.volcano-marker { width: 20px; height: 18px; background: var(--marker-color); clip-path: polygon(50% 0, 0 100%, 100% 100%); }
+.volcano-marker-insar { --marker-color: var(--insar); }
+.volcano-marker-no-insar { --marker-color: var(--sin-insar); }
 
 /* Detalle InSAR, conservando mapas, leyenda científica y series. */
 .back-button { margin: 0 0 12px; padding: 8px 14px; border: 1px solid var(--borde); border-radius: var(--radius); background: white; color: var(--azul); font: inherit; font-weight: 750; min-height: 44px; cursor: pointer; }

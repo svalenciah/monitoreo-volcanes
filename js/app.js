@@ -1,6 +1,7 @@
 import {
     cargarCatalogo,
     cargarVolcanesGeoJSON,
+    cargarMunicipiosAntioquia,
     cargarEstacionesSismicas,
     buscarVolcan,
     obtenerFechas,
@@ -12,19 +13,17 @@ import {
     cargarSerieTemporal as cargarSerieTemporalJSON,
     contarVolcanesInSAR,
     contarVolcanesSismica
-} from "./data.js?v=20261001-sama";
+} from "./data.js?v=20261002-limites-municipales";
 
 import {
     crearMapaGeneral,
     crearMapaBoletin
-} from "./map.js?v=20261001-sama";
+} from "./map.js?v=20261002-limites-municipales";
 
 import {
     crearGraficaEvolucion
-} from "./charts.js?v=20261001-sama";
+} from "./charts.js?v=20261001-eje-y";
 
-
-const EDIFICIOS_VOLCANICOS_REGISTRADOS = 26;
 
 const homeView = document.getElementById("home-view");
 const bulletinView = document.getElementById("bulletin-view");
@@ -46,6 +45,7 @@ async function iniciar() {
         const fechaUrl = parametros.get("fecha");
 
         const catalogo = await cargarCatalogo();
+        actualizarEnlacesVolcanes(catalogo);
 
         if (!volcanId) {
             await mostrarMapaGeneral(catalogo);
@@ -66,6 +66,26 @@ async function iniciar() {
 }
 
 
+function actualizarEnlacesVolcanes(catalogo) {
+    const contenedor = document.getElementById("site-links");
+
+    if (!contenedor) {
+        return;
+    }
+
+    const volcanes = [...(catalogo.volcanes || [])].sort(
+        (a, b) => a.nombre.localeCompare(b.nombre, "es")
+    );
+
+    for (const volcan of volcanes) {
+        const enlace = document.createElement("a");
+        enlace.href = `?volcan=${encodeURIComponent(volcan.id)}`;
+        enlace.textContent = volcan.nombre;
+        contenedor.appendChild(enlace);
+    }
+}
+
+
 // ============================================================
 // MAPA GENERAL
 // ============================================================
@@ -75,6 +95,28 @@ async function mostrarMapaGeneral(catalogo) {
     bulletinView.hidden = true;
 
     const volcanes = await cargarVolcanesGeoJSON();
+    let municipiosAntioquia = null;
+
+    try {
+        municipiosAntioquia = await cargarMunicipiosAntioquia();
+    } catch (error) {
+        console.warn(
+            "No fue posible cargar los límites municipales de Antioquia:",
+            error
+        );
+    }
+
+    const volcanesInSAR = new Set(
+        (catalogo.volcanes || []).map(volcan => volcan.id)
+    );
+
+    volcanes.features = (volcanes.features || []).map(feature => ({
+        ...feature,
+        properties: {
+            ...feature.properties,
+            tiene_insar: volcanesInSAR.has(feature.properties?.id)
+        }
+    }));
 
     let estaciones = {
         type: "FeatureCollection",
@@ -92,7 +134,7 @@ async function mostrarMapaGeneral(catalogo) {
 
     colocarTexto(
         "stat-volcanic-buildings",
-        EDIFICIOS_VOLCANICOS_REGISTRADOS
+        volcanes.features?.length || 0
     );
 
     colocarTexto(
@@ -109,6 +151,10 @@ async function mostrarMapaGeneral(catalogo) {
         volcanes,
         estaciones,
         volcanId => {
+            if (!buscarVolcan(catalogo, volcanId)) {
+                return;
+            }
+
             const url = new URL(
                 window.location.href
             );
@@ -120,7 +166,8 @@ async function mostrarMapaGeneral(catalogo) {
             );
 
             window.location.href = url.toString();
-        }
+        },
+        municipiosAntioquia
     );
 }
 

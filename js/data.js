@@ -18,6 +18,10 @@ export function cargarVolcanesGeoJSON() {
     return cargarJSON("./data/volcanes.geojson");
 }
 
+export function cargarMunicipiosAntioquia() {
+    return cargarJSON("./data/municipios_antioquia.geojson");
+}
+
 export function cargarEstacionesSismicas() {
     return cargarJSON("./data/estaciones_sismicas.geojson");
 }

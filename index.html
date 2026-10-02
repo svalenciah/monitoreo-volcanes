@@ -13,7 +13,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/styles.css?v=20261001-sama"
+        href="./css/styles.css?v=20261002-limites-municipales"
     >
 </head>
 
@@ -44,8 +44,6 @@
             <div class="nav-links" id="site-links">
                 <a href="./#resumen">Resumen</a>
                 <a href="./#mapa">Mapa</a>
-                <a href="?volcan=el_aburrido">El Aburrido</a>
-                <a href="?volcan=las_changas">Las Changas</a>
             </div>
         </nav>
     </header>
@@ -65,7 +63,7 @@
                 </div>
                 <p class="hero-subtitle">
                     Monitoreo satelital de cambios en la superficie mediante
-                    interferometría radar en Antioquia.
+                    interferometría radar en volcanes de lodo de Antioquia.
                 </p>
             </section>
 
@@ -113,13 +111,17 @@
                     <h2>Capas del mapa</h2>
 
                     <div class="map-legend-list">
-                        <span><i class="map-symbol volcano-symbol"></i>Volcán de lodo</span>
+                        <span><i class="map-symbol volcano-symbol-insar"></i>Con monitoreo satelital</span>
+                        <span><i class="map-symbol volcano-symbol-no-insar"></i>Sin monitoreo satelital</span>
                         <span><i class="map-symbol seismic-symbol"></i>Estación sísmica</span>
+                        <span><i class="municipality-symbol"></i>Límite municipal</span>
                     </div>
 
                     <p class="map-note">
-                        Seleccione un volcán para consultar sus observaciones InSAR,
-                        series temporales y datos técnicos.
+                        Seleccione un punto naranja para consultar sus observaciones.
+                    </p>
+                    <p class="map-note map-attribution">
+                        Capa municipal: sama-monitoring (MIT).
                     </p>
                 </aside>
             </section>
@@ -428,7 +430,7 @@
 
     <script
         type="module"
-        src="./js/app.js?v=20261001-sama"
+        src="./js/app.js?v=20261002-limites-municipales"
     ></script>
 
 </body>

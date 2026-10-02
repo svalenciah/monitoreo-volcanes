@@ -133,7 +133,11 @@ export function crearGraficaEvolucion(
                         },
                         ticks: {
                             callback: function (valor) {
-                                return `${valor} cm`;
+                                const valorRedondeado = Number(
+                                    Number(valor).toFixed(2)
+                                );
+
+                                return `${valorRedondeado} cm`;
                             }
                         }
                     }

@@ -11,8 +11,38 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -76.457,
-          8.341
+          -76.45615,
+          8.34069
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "EST002",
+        "nombre": "Estación 2",
+        "volcan_id": "el_aburrido"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.45781,
+          8.34040
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "EST003",
+        "nombre": "Estación 3",
+        "volcan_id": "el_aburrido"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.45736225,
+          8.34185873
         ]
       }
     }

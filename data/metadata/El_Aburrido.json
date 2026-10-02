@@ -1,22 +1,13 @@
 {
   "id": "el_aburrido",
   "nombre": "El Aburrido",
-
-  "descripcion": "Sitio de monitoreo de cambios en la superficie mediante observaciones satelitales.",
-
   "sensor": "SAOCOM",
   "metodo": "InSAR",
   "procesamiento": "ISCE + MintPy",
-
   "geometria": "Ascendente 463",
-
-  "variable_tecnica": "Desplazamiento LOS",
-  "variable_publica": "Cambio observado en la superficie",
-
   "unidad_raster": "m",
   "unidad_visualizacion": "cm",
-
   "crs": "EPSG:4326",
-
-  "nota": "La información presentada tiene carácter informativo y corresponde a observaciones satelitales de cambios en la superficie."
+  "fecha_referencia": "20250915",
+  "nota": "Desplazamiento acumulado LOS respecto a la fecha de referencia de MintPy."
 }

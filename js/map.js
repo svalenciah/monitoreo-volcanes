@@ -103,7 +103,8 @@ function agregarControlesMapa(mapa, capasBase) {
 export function crearMapaGeneral(
     volcanesGeoJSON,
     estacionesGeoJSON,
-    onVolcanClick
+    onVolcanClick,
+    municipiosAntioquiaGeoJSON
 ) {
     const contenedor = document.getElementById("general-map");
 
@@ -126,17 +127,42 @@ export function crearMapaGeneral(
     const capasBase = crearCapasBase();
     agregarControlesMapa(mapaGeneral, capasBase);
 
-    const iconoVolcan = L.divIcon({
-        className: "volcano-marker-container",
-        html: '<div class="volcano-marker"></div>',
-        iconSize: [20, 18],
-        iconAnchor: [10, 9]
-    });
+    let capaMunicipios = null;
+    if (municipiosAntioquiaGeoJSON) {
+        capaMunicipios = L.geoJSON(
+            municipiosAntioquiaGeoJSON,
+            {
+                style: function () {
+                    return {
+                        color: "#45546a",
+                        weight: 0.55,
+                        opacity: 0.45,
+                        fillColor: "#ffffff",
+                        fillOpacity: 0.03
+                    };
+                },
+                onEachFeature: function (feature, layer) {
+                    const nombre = feature.properties?.municipality || "Municipio";
+                    layer.bindTooltip(nombre, { sticky: true });
+                }
+            }
+        ).addTo(mapaGeneral);
+    }
 
     const capaVolcanes = L.geoJSON(
         volcanesGeoJSON,
         {
             pointToLayer: function (feature, latlng) {
+                const claseMarcador = feature.properties?.tiene_insar
+                    ? "volcano-marker-insar"
+                    : "volcano-marker-no-insar";
+                const iconoVolcan = L.divIcon({
+                    className: "volcano-marker-container",
+                    html: `<div class="volcano-marker ${claseMarcador}"></div>`,
+                    iconSize: [20, 18],
+                    iconAnchor: [10, 9]
+                });
+
                 return L.marker(
                     latlng,
                     {
@@ -187,8 +213,7 @@ export function crearMapaGeneral(
                         latlng,
                         {
                             radius: 6,
-                            weight: 2,
-                            color: "#ffffff",
+                            weight: 0,
                             fillColor: "#176b87",
                             fillOpacity: 1
                         }
@@ -221,6 +246,10 @@ export function crearMapaGeneral(
         "Volcanes de lodo": capaVolcanes
     };
 
+    if (capaMunicipios) {
+        capasSuperpuestas["Límite municipal"] = capaMunicipios;
+    }
+
     if (capaEstaciones) {
         capasSuperpuestas["Estaciones sísmicas"] = capaEstaciones;
     }
@@ -235,6 +264,10 @@ export function crearMapaGeneral(
     ).addTo(mapaGeneral);
 
     let limites = capaVolcanes.getBounds();
+
+    if (capaMunicipios?.getBounds().isValid()) {
+        limites.extend(capaMunicipios.getBounds());
+    }
 
     if (
         capaEstaciones &&
@@ -430,7 +463,7 @@ export async function crearMapaBoletin(
             }
         ).addTo(mapaBoletin);
 
-        capasSuperpuestas["Flujos históricos"] = capaFlujos;
+        capasSuperpuestas["Edificios volcánicos"] = capaFlujos;
 
         if (!limitesFinales && capaFlujos.getBounds().isValid()) {
             limitesFinales = capaFlujos.getBounds();
