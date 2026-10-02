@@ -50,14 +50,14 @@ from rasterio.mask import mask as rio_mask
 # ============================================================
 
 # Nombre del sitio / volcan
-VOLCAN = "Las Changas"
+VOLCAN = "Palmares Cenizosa"
 
 # Fecha que quieres extraer del timeseries
 FECHA = "20260911"
 
 # Archivo MintPy
 TIMESERIES = Path(
-    "/run/media/spinedas1/Seagate/saocom/desc137/LasChangas/geo/geo_timeseries_ERA5_ramp_demErr.h5"
+    "/run/media/spinedas1/Seagate/saocom/desc137/PalmaresCenizosa/geo/geo_timeseries_ERA5_ramp_demErr.h5"
 )
 
 # Mascara espacial del volcan

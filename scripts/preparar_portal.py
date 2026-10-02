@@ -10,23 +10,23 @@ import numpy as np
 # CONFIGURACION
 # ============================================================
 
-VOLCAN = "El Aburrido"
-VOLCAN_ID = "el_aburrido"
-VOLCAN_CARPETA = "El_Aburrido"
+VOLCAN = "Palmares_Cenizosa"
+VOLCAN_ID = "palmares_cenizosa"
+VOLCAN_CARPETA = "Palmares_Cenizosa"
 
-FECHA = "20260910"
+FECHA = "20260911"
 
 BASE = Path(
     "/run/media/spinedas1/Seagate/"
     "Diapiros/Desarrollos/InSAR/SBAS"
 )
 
-PIPELINE = BASE / "Pipeline"
+PIPELINE = BASE / "Geoportal"
 GEOPORTAL = BASE / "Geoportal"
 
 RESULTADOS = (
     PIPELINE
-    / "resultados"
+    / "data/rasters"
     / VOLCAN
     / FECHA
 )
@@ -40,7 +40,7 @@ DATA = GEOPORTAL / "data"
 
 RASTER_ORIGEN = (
     RESULTADOS
-    / f"{VOLCAN}_{FECHA}_desplazamiento_recortado.tif"
+    / f"{FECHA}.tif"
 )
 
 GPKG_ORIGEN = (
@@ -87,6 +87,10 @@ METADATA_DESTINO = (
 
 CATALOGO = DATA / "catalog.json"
 VOLCANES_GEOJSON = DATA / "volcanes.geojson"
+PUNTOS_VOLCANICOS = Path(
+    "/run/media/spinedas1/Seagate/Diapiros/Desarrollos/QGIS/"
+    "volcanes-lodo/Volcanes_flujos/volcanes_lodo_pt.shp"
+)
 
 
 # ============================================================
@@ -317,12 +321,21 @@ with open(
 
 
 # ============================================================
-# PUNTO REPRESENTATIVO DEL VOLCAN
+# PUNTO OFICIAL DEL VOLCAN
 # ============================================================
 
-union_area = area.geometry.union_all()
+puntos = gpd.read_file(PUNTOS_VOLCANICOS)
+if puntos.crs is None or "name" not in puntos:
+    raise ValueError("La capa oficial debe tener CRS y campo 'name'.")
 
-punto = union_area.representative_point()
+nombre_punto = VOLCAN.replace("_", " ").strip().casefold()
+puntos_volcan = puntos[
+    puntos["name"].astype(str).str.strip().str.casefold() == nombre_punto
+]
+if len(puntos_volcan) != 1 or puntos_volcan.geometry.iloc[0].geom_type != "Point":
+    raise ValueError(f"No se encontró un único punto oficial para {VOLCAN!r}.")
+
+punto = puntos_volcan.to_crs(4326).geometry.iloc[0]
 
 feature = {
 

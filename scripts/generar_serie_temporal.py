@@ -13,13 +13,13 @@ from rasterio.mask import mask as rio_mask
 # CONFIGURACION
 # ============================================================
 
-VOLCAN = "El Aburrido"
+VOLCAN = "Palmares Cenizosa"
 
-ID_VOLCAN = "el_aburrido"
+ID_VOLCAN = "palmares_cenizosa"
 
 TIMESERIES = Path(
-    "/run/media/spinedas1/Seagate/saocom/asc463/"
-    "Aburrido/geo/geo_timeseries_ERA5_ramp_demErr.h5"
+    "/run/media/spinedas1/Seagate/saocom/desc137/"
+    "PalmaresCenizosa/geo/geo_timeseries_ERA5_ramp_demErr.h5"
 )
 
 MASCARA = Path(
@@ -31,7 +31,7 @@ MASCARA = Path(
 CAMPO_VOLCAN = "nombre"
 
 SALIDA = Path(
-    "data/series/El_Aburrido.json"
+    "data/series/Palmares_Cenizosa.json"
 )
 
 
