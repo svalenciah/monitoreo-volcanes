@@ -67,9 +67,9 @@ section[id] { scroll-margin-top: 160px; }
 .map-legend-list span { display: flex; align-items: center; gap: 10px; font-size: 14px; }
 .map-symbol { flex: 0 0 auto; display: inline-block; width: 14px; height: 14px; border-radius: 50%; }
 .volcano-symbol-insar, .volcano-symbol-no-insar { clip-path: polygon(50% 0, 0 100%, 100% 100%); border-radius: 0; }
+.volcano-symbol-combined { clip-path: polygon(50% 0, 0 100%, 100% 100%); border-radius: 0; background: var(--sismica); }
 .volcano-symbol-insar { background: var(--insar); }
 .volcano-symbol-no-insar { background: var(--sin-insar); }
-.seismic-symbol { background: var(--sismica); }
 .municipality-symbol { flex: 0 0 auto; width: 20px; height: 0; border-top: 2px solid #172033; opacity: 0.7; }
 .map-note { margin: 16px 0 0; padding: 12px 0 0; border-top: 1px solid var(--borde); font-size: 13px; line-height: 1.5; }
 .map-attribution { font-size: 11px; }
@@ -77,6 +77,7 @@ section[id] { scroll-margin-top: 160px; }
 .volcano-marker { width: 20px; height: 18px; background: var(--marker-color); clip-path: polygon(50% 0, 0 100%, 100% 100%); }
 .volcano-marker-insar { --marker-color: var(--insar); }
 .volcano-marker-no-insar { --marker-color: var(--sin-insar); }
+.volcano-marker-combined { --marker-color: var(--sismica); }
 .seismic-station-container { display: grid; place-items: center; background: transparent; border: 0; }
 .seismic-station-marker { display: grid; place-items: center; width: 24px; height: 24px; border: 2px solid #176b56; border-radius: 50%; background: #39b77a; color: #063a2a; font-size: 12px; font-weight: 850; line-height: 1; box-shadow: 0 1px 4px rgba(0, 32, 64, 0.25); }
 .seismic-popup-table { border-collapse: collapse; color: var(--azul); font: inherit; font-size: 13px; min-width: 220px; }

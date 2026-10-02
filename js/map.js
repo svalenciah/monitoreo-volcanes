@@ -152,9 +152,12 @@ export function crearMapaGeneral(
         volcanesGeoJSON,
         {
             pointToLayer: function (feature, latlng) {
-                const claseMarcador = feature.properties?.tiene_insar
-                    ? "volcano-marker-insar"
-                    : "volcano-marker-no-insar";
+                const propiedades = feature.properties || {};
+                const claseMarcador = propiedades.tiene_insar && propiedades.tiene_sismica
+                    ? "volcano-marker-combined"
+                    : propiedades.tiene_insar
+                        ? "volcano-marker-insar"
+                        : "volcano-marker-no-insar";
                 const iconoVolcan = L.divIcon({
                     className: "volcano-marker-container",
                     html: `<div class="volcano-marker ${claseMarcador}"></div>`,

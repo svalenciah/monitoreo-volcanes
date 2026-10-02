@@ -18,7 +18,7 @@ import {
 import {
     crearMapaGeneral,
     crearMapaBoletin
-} from "./map.js?v=20261002-limites-municipales";
+} from "./map.js?v=20261002-monitoreo-combinado";
 
 import {
     crearGraficaEvolucion
@@ -110,14 +110,6 @@ async function mostrarMapaGeneral(catalogo) {
         (catalogo.volcanes || []).map(volcan => volcan.id)
     );
 
-    volcanes.features = (volcanes.features || []).map(feature => ({
-        ...feature,
-        properties: {
-            ...feature.properties,
-            tiene_insar: volcanesInSAR.has(feature.properties?.id)
-        }
-    }));
-
     let estaciones = {
         type: "FeatureCollection",
         features: []
@@ -131,6 +123,25 @@ async function mostrarMapaGeneral(catalogo) {
             error
         );
     }
+
+    const volcanesSismica = new Set(
+        (estaciones.features || [])
+            .map(feature => feature.properties?.volcan_id)
+            .filter(Boolean)
+    );
+
+    volcanes.features = (volcanes.features || []).map(feature => {
+        const id = feature.properties?.id;
+
+        return {
+            ...feature,
+            properties: {
+                ...feature.properties,
+                tiene_insar: volcanesInSAR.has(id),
+                tiene_sismica: volcanesSismica.has(id)
+            }
+        };
+    });
 
     colocarTexto(
         "stat-volcanic-buildings",
